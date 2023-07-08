@@ -9,7 +9,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 final efinityDecoder = MetadataDecoder();
-final Metadata efinityMetadata = efinityDecoder.decodeAsMetadata(efinityMainnet3014);
+final Metadata efinityMetadata = efinityDecoder.decodeAsMetadata(efinityV3014);
 final ChainDescription efinityChainDescription = ChainDescription.fromMetadata(efinityMetadata);
 final Codec efinityCodec = Codec(efinityChainDescription.types);
 
@@ -19,7 +19,7 @@ final ChainDescription matrixChainDescription = ChainDescription.fromMetadata(ma
 final Codec matrixCodec = Codec(matrixChainDescription.types);
 
 final canaryDecoder = MetadataDecoder();
-final Metadata canaryMetadata = canaryDecoder.decodeAsMetadata(matrixCanary602);
+final Metadata canaryMetadata = canaryDecoder.decodeAsMetadata(canaryV602);
 final ChainDescription canaryChainDescription = ChainDescription.fromMetadata(canaryMetadata);
 final Codec canaryCodec = Codec(canaryChainDescription.types);
 
