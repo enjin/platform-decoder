@@ -1,7 +1,7 @@
 FROM dart:stable as build
 
 LABEL org.opencontainers.image.source=https://github.com/enjin/platform-decoder
-LABEL org.opencontainers.image.description="Platform - Decoder"
+LABEL org.opencontainers.image.description="Enjin Platform - Decoder"
 LABEL org.opencontainers.image.licenses=LGPL-3.0-only
 
 # Resolve app dependencies.

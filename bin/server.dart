@@ -8,25 +8,20 @@ import 'package:substrate_metadata/models/models.dart';
 import 'dart:io';
 import 'dart:isolate';
 
-final stagingDecoder = MetadataDecoder();
-final Metadata stagingMetadata = stagingDecoder.decodeAsMetadata(matrixCanary602);
-final ChainDescription stagingChainDescription = ChainDescription.fromMetadata(stagingMetadata);
-final Codec stagingCodec = Codec(stagingChainDescription.types);
+final efinityDecoder = MetadataDecoder();
+final Metadata efinityMetadata = efinityDecoder.decodeAsMetadata(efinityMainnet3014);
+final ChainDescription efinityChainDescription = ChainDescription.fromMetadata(efinityMetadata);
+final Codec efinityCodec = Codec(efinityChainDescription.types);
 
-final mainDecoder = MetadataDecoder();
-final Metadata mainMetadata = mainDecoder.decodeAsMetadata(efinityMainnet3014);
-final ChainDescription mainChainDescription = ChainDescription.fromMetadata(mainMetadata);
-final Codec mainCodec = Codec(mainChainDescription.types);
+final matrixDecoder = MetadataDecoder();
+final Metadata matrixMetadata = matrixDecoder.decodeAsMetadata(matrixProd);
+final ChainDescription matrixChainDescription = ChainDescription.fromMetadata(matrixMetadata);
+final Codec matrixCodec = Codec(matrixChainDescription.types);
 
 final canaryDecoder = MetadataDecoder();
 final Metadata canaryMetadata = canaryDecoder.decodeAsMetadata(matrixCanary602);
 final ChainDescription canaryChainDescription = ChainDescription.fromMetadata(canaryMetadata);
 final Codec canaryCodec = Codec(canaryChainDescription.types);
-
-final enjinDecoder = MetadataDecoder();
-final Metadata enjinMetadata = enjinDecoder.decodeAsMetadata(matrixProd);
-final ChainDescription enjinChainDescription = ChainDescription.fromMetadata(enjinMetadata);
-final Codec enjinCodec = Codec(enjinChainDescription.types);
 
 void main() async {
   for (var i = 1; i < 8; i++) {
@@ -76,24 +71,39 @@ void _handleRequest(HttpRequest request) async {
   }
 
   if (body['extrinsics'] != null) {
-    final extrinsics = (body['extrinsics'] as List).map((e) {
+    try {
+      final extrinsics = (body['extrinsics'] as List).map((e) {
         final decoded = decodeExtrinsic(e, network);
         decoded['extrinsic_hash'] = Extrinsic.computeHash(e);
-        return toJson(decoded);
-    });
 
-    res..headers.contentType = ContentType.json
-      ..statusCode = HttpStatus.ok
-      ..write(extrinsics.toList());
+        return toJson(decoded);
+      });
+
+      res..headers.contentType = ContentType.json
+        ..statusCode = HttpStatus.ok
+        ..write(extrinsics.toList());
+
+    } catch (e) {
+      res..headers.contentType = ContentType.json
+          ..statusCode = HttpStatus.badRequest
+        ..write('{"error": "Failed to decode extrinsics"}');
+    }
   }
 
   if (body['events'] != null) {
-    final decoded = decodeEvents(body['events'], network);
-    String events = toJson(decoded);
+    try {
+      final decoded = decodeEvents(body['events'], network);
+      String events = toJson(decoded);
 
-    res..headers.contentType = ContentType.json
-      ..statusCode = HttpStatus.ok
-      ..write(events);
+      res..headers.contentType = ContentType.json
+        ..statusCode = HttpStatus.ok
+        ..write(events);
+
+    } catch (e) {
+      res..headers.contentType = ContentType.json
+        ..statusCode = HttpStatus.badRequest
+        ..write('{"error": "Failed to decode events"}');
+    }
   }
 
   await res.close();
@@ -116,12 +126,7 @@ String toJson(dynamic decoded) {
 
 dynamic decodeExtrinsic(raw, network) {
   if (network == 'enjin') {
-    final dynamic decoded = Extrinsic.decodeExtrinsic(raw, enjinChainDescription);
-    return decoded;
-  }
-
-  if (network == 'polkadot') {
-    final dynamic decoded = Extrinsic.decodeExtrinsic(raw, mainChainDescription);
+    final dynamic decoded = Extrinsic.decodeExtrinsic(raw, matrixChainDescription);
     return decoded;
   }
 
@@ -130,18 +135,13 @@ dynamic decodeExtrinsic(raw, network) {
     return decoded;
   }
 
-  final dynamic decoded = Extrinsic.decodeExtrinsic(raw, stagingChainDescription);
+  final dynamic decoded = Extrinsic.decodeExtrinsic(raw, efinityChainDescription);
   return decoded;
 }
 
 dynamic decodeEvents(raw, network) {
   if (network == 'enjin') {
-    final dynamic decoded = enjinCodec.decode(enjinChainDescription.eventRecordList, raw);
-    return decoded;
-  }
-
-  if (network == 'polkadot') {
-    final dynamic decoded = mainCodec.decode(mainChainDescription.eventRecordList, raw);
+    final dynamic decoded = matrixCodec.decode(matrixChainDescription.eventRecordList, raw);
     return decoded;
   }
 
@@ -150,6 +150,6 @@ dynamic decodeEvents(raw, network) {
     return decoded;
   }
 
-  final dynamic decoded = stagingCodec.decode(stagingChainDescription.eventRecordList, raw);
+  final dynamic decoded = efinityCodec.decode(efinityChainDescription.eventRecordList, raw);
   return decoded;
 }
