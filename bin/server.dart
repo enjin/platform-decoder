@@ -19,7 +19,7 @@ final ChainDescription matrixChainDescription = ChainDescription.fromMetadata(ma
 final Codec matrixCodec = Codec(matrixChainDescription.types);
 
 final canaryDecoder = MetadataDecoder();
-final Metadata canaryMetadata = canaryDecoder.decodeAsMetadata(canaryV602);
+final Metadata canaryMetadata = canaryDecoder.decodeAsMetadata(canaryV104);
 final ChainDescription canaryChainDescription = ChainDescription.fromMetadata(canaryMetadata);
 final Codec canaryCodec = Codec(canaryChainDescription.types);
 
@@ -61,13 +61,20 @@ void _handleRequest(HttpRequest request) async {
   final network = body['network'] ?? 'developer';
 
   if (body['extrinsic'] != null) {
-    final decoded = decodeExtrinsic(body['extrinsic'], network);
-    decoded['extrinsic_hash'] = Extrinsic.computeHash(body['extrinsic']);
-    String extrinsic = toJson(decoded);
+    try {
+      final decoded = decodeExtrinsic(body['extrinsic'], network);
+      decoded['extrinsic_hash'] = Extrinsic.computeHash(body['extrinsic']);
+      String extrinsic = toJson(decoded);
 
-    res..headers.contentType = ContentType.json
-      ..statusCode = HttpStatus.ok
-      ..write(extrinsic);
+      res
+        ..headers.contentType = ContentType.json
+        ..statusCode = HttpStatus.ok
+        ..write(extrinsic);
+    } catch (e) {
+      res..headers.contentType = ContentType.json
+        ..statusCode = HttpStatus.badRequest
+        ..write('{"error": "Failed to decode extrinsic"}');
+    }
   }
 
   if (body['extrinsics'] != null) {
