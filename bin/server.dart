@@ -189,7 +189,7 @@ dynamic decodeEvents(raw, network) {
     return decoded;
   }
 
-  if (network == 'canary' || network == 'matrix-canary') {
+  if (network == 'canary' || network == 'canary-matrixchain') {
     final dynamic decoded = matrixCanaryCodec.decode(
         matrixCanaryChainDescription.eventRecordList, raw);
     return decoded;
