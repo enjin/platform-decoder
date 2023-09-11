@@ -83,7 +83,7 @@ void _handleRequest(HttpRequest request) async {
   }
 
   final Map<String, dynamic> body = jsonDecode(content);
-  final network = body['network'] ?? 'developer';
+  final network = body['network'] ?? 'enjin';
 
   if (body['extrinsic'] != null) {
     try {
