@@ -159,7 +159,7 @@ dynamic decodeExtrinsic(raw, network) {
     return decoded;
   }
 
-  if (network == 'canary' || network == 'matrix-canary') {
+  if (network == 'canary' || network == 'canary-matrixchain') {
     final dynamic decoded =
         Extrinsic.decodeExtrinsic(raw, matrixCanaryChainDescription);
     return decoded;
