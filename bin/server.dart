@@ -153,7 +153,7 @@ String toJson(dynamic decoded) {
 }
 
 dynamic decodeExtrinsic(raw, network) {
-  if (network == 'enjin' || network == 'matrix-enjin') {
+  if (network == 'enjin' || network == 'enjin-matrixchain') {
     final dynamic decoded =
         Extrinsic.decodeExtrinsic(raw, matrixChainDescription);
     return decoded;
