@@ -183,7 +183,7 @@ dynamic decodeExtrinsic(raw, network) {
 }
 
 dynamic decodeEvents(raw, network) {
-  if (network == 'enjin' || network == 'matrix-enjin') {
+  if (network == 'enjin' || network == 'enjin-matrixchain') {
     final dynamic decoded =
         matrixCodec.decode(matrixChainDescription.eventRecordList, raw);
     return decoded;
