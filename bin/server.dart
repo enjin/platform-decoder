@@ -83,17 +83,24 @@ void _handleRequest(HttpRequest request) async {
   }
 
   final Map<String, dynamic> body = jsonDecode(content);
-  final network = body['network'] ?? 'developer';
+  final network = body['network'] ?? 'enjin';
 
   if (body['extrinsic'] != null) {
-    final decoded = decodeExtrinsic(body['extrinsic'], network);
-    decoded['extrinsic_hash'] = Extrinsic.computeHash(body['extrinsic']);
-    String extrinsic = toJson(decoded);
+    try {
+      final decoded = decodeExtrinsic(body['extrinsic'], network);
+      decoded['extrinsic_hash'] = Extrinsic.computeHash(body['extrinsic']);
+      String extrinsic = toJson(decoded);
 
-    res
-      ..headers.contentType = ContentType.json
-      ..statusCode = HttpStatus.ok
-      ..write(extrinsic);
+      res
+        ..headers.contentType = ContentType.json
+        ..statusCode = HttpStatus.ok
+        ..write(extrinsic);
+    } catch (e) {
+      res
+        ..headers.contentType = ContentType.json
+        ..statusCode = HttpStatus.badRequest
+        ..write('{"error": "Failed to decode extrinsic"}');
+    }
   }
 
   if (body['extrinsics'] != null) {
