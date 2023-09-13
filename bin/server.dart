@@ -22,7 +22,7 @@ final Codec efinityCodec = Codec(efinityChainDescription.types);
 
 final matrixDecoder = MetadataDecoder();
 final Metadata matrixMetadata =
-    matrixDecoder.decodeAsMetadata(matrix_prod.v603);
+    matrixDecoder.decodeAsMetadata(matrix_prod.v604);
 final ChainDescription matrixChainDescription =
     ChainDescription.fromMetadata(matrixMetadata);
 final Codec matrixCodec = Codec(matrixChainDescription.types);
