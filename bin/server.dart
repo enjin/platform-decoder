@@ -29,7 +29,7 @@ final Codec matrixCodec = Codec(matrixChainDescription.types);
 
 final matrixCanaryDecoder = MetadataDecoder();
 final Metadata matrixCanaryMetadata =
-    matrixCanaryDecoder.decodeAsMetadata(matrix_canary.v604);
+    matrixCanaryDecoder.decodeAsMetadata(matrix_canary.v605);
 final ChainDescription matrixCanaryChainDescription =
     ChainDescription.fromMetadata(matrixCanaryMetadata);
 final Codec matrixCanaryCodec = Codec(matrixCanaryChainDescription.types);
