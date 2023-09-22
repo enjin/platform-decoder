@@ -42,7 +42,7 @@ final Codec enjinCodec = Codec(enjinChainDescription.types);
 
 final enjinCanaryDecoder = MetadataDecoder();
 final Metadata enjinCanaryMetadata =
-    enjinCanaryDecoder.decodeAsMetadata(enjin_canary.v106);
+    enjinCanaryDecoder.decodeAsMetadata(enjin_canary.v107);
 final ChainDescription enjinCanaryChainDescription =
     ChainDescription.fromMetadata(enjinCanaryMetadata);
 final Codec enjinCanaryCodec = Codec(enjinCanaryChainDescription.types);
