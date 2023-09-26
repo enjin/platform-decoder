@@ -35,7 +35,7 @@ final ChainDescription matrixCanaryChainDescription =
 final Codec matrixCanaryCodec = Codec(matrixCanaryChainDescription.types);
 
 final enjinDecoder = MetadataDecoder();
-final Metadata enjinMetadata = enjinDecoder.decodeAsMetadata(enjin_prod.v100);
+final Metadata enjinMetadata = enjinDecoder.decodeAsMetadata(enjin_prod.v102);
 final ChainDescription enjinChainDescription =
     ChainDescription.fromMetadata(enjinMetadata);
 final Codec enjinCodec = Codec(enjinChainDescription.types);
