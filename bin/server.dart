@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:decoder/consts/efinity/production_metadata.dart'
     as efinity_prod;
-import 'package:decoder/consts/enjin/production_metadata.dart' as enjin_prod;
+import 'package:decoder/consts/enjin/production/v102.dart' as enjin_prod;
 import 'package:decoder/consts/enjin/canary_metadata.dart' as enjin_canary;
-import 'package:decoder/consts/matrix/production_metadata.dart' as matrix_prod;
+import 'package:decoder/consts/matrix/production/v605.dart' as matrix_prod;
 import 'package:decoder/consts/matrix/canary_metadata.dart' as matrix_canary;
 import 'package:polkadart_scale_codec/polkadart_scale_codec.dart';
 import 'package:substrate_metadata/chain_description/chain_description.model.dart';
@@ -22,7 +22,7 @@ final Codec efinityCodec = Codec(efinityChainDescription.types);
 
 final matrixDecoder = MetadataDecoder();
 final Metadata matrixMetadata =
-    matrixDecoder.decodeAsMetadata(matrix_prod.v604);
+    matrixDecoder.decodeAsMetadata(matrix_prod.metadata);
 final ChainDescription matrixChainDescription =
     ChainDescription.fromMetadata(matrixMetadata);
 final Codec matrixCodec = Codec(matrixChainDescription.types);
@@ -35,7 +35,7 @@ final ChainDescription matrixCanaryChainDescription =
 final Codec matrixCanaryCodec = Codec(matrixCanaryChainDescription.types);
 
 final enjinDecoder = MetadataDecoder();
-final Metadata enjinMetadata = enjinDecoder.decodeAsMetadata(enjin_prod.v102);
+final Metadata enjinMetadata = enjinDecoder.decodeAsMetadata(enjin_prod.metadata);
 final ChainDescription enjinChainDescription =
     ChainDescription.fromMetadata(enjinMetadata);
 final Codec enjinCodec = Codec(enjinChainDescription.types);
