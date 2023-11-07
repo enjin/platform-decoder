@@ -1,10 +1,7 @@
 import 'dart:convert';
-import 'package:decoder/consts/efinity/production_metadata.dart'
-    as efinity_prod;
-import 'package:decoder/consts/enjin/production/v102.dart' as enjin_prod;
-import 'package:decoder/consts/enjin/canary_metadata.dart' as enjin_canary;
-import 'package:decoder/consts/matrix/production/v605.dart' as matrix_prod;
-import 'package:decoder/consts/matrix/canary_metadata.dart' as matrix_canary;
+
+import 'package:decoder/consts/enjin/enjin.dart' as enjin;
+import 'package:decoder/consts/matrix/matrix.dart' as matrix;
 import 'package:polkadart_scale_codec/polkadart_scale_codec.dart';
 import 'package:substrate_metadata/chain_description/chain_description.model.dart';
 import 'package:substrate_metadata/extrinsic.dart';
@@ -13,36 +10,30 @@ import 'package:substrate_metadata/models/models.dart';
 import 'dart:io';
 import 'dart:isolate';
 
-final efinityDecoder = MetadataDecoder();
-final Metadata efinityMetadata =
-    efinityDecoder.decodeAsMetadata(efinity_prod.v3014);
-final ChainDescription efinityChainDescription =
-    ChainDescription.fromMetadata(efinityMetadata);
-final Codec efinityCodec = Codec(efinityChainDescription.types);
-
 final matrixDecoder = MetadataDecoder();
 final Metadata matrixMetadata =
-    matrixDecoder.decodeAsMetadata(matrix_prod.metadata);
+    matrixDecoder.decodeAsMetadata(matrix.production());
 final ChainDescription matrixChainDescription =
     ChainDescription.fromMetadata(matrixMetadata);
 final Codec matrixCodec = Codec(matrixChainDescription.types);
 
 final matrixCanaryDecoder = MetadataDecoder();
 final Metadata matrixCanaryMetadata =
-    matrixCanaryDecoder.decodeAsMetadata(matrix_canary.v605);
+    matrixCanaryDecoder.decodeAsMetadata(matrix.canary());
 final ChainDescription matrixCanaryChainDescription =
     ChainDescription.fromMetadata(matrixCanaryMetadata);
 final Codec matrixCanaryCodec = Codec(matrixCanaryChainDescription.types);
 
 final enjinDecoder = MetadataDecoder();
-final Metadata enjinMetadata = enjinDecoder.decodeAsMetadata(enjin_prod.metadata);
+final Metadata enjinMetadata =
+    enjinDecoder.decodeAsMetadata(enjin.production());
 final ChainDescription enjinChainDescription =
     ChainDescription.fromMetadata(enjinMetadata);
 final Codec enjinCodec = Codec(enjinChainDescription.types);
 
 final enjinCanaryDecoder = MetadataDecoder();
 final Metadata enjinCanaryMetadata =
-    enjinCanaryDecoder.decodeAsMetadata(enjin_canary.v107);
+    enjinCanaryDecoder.decodeAsMetadata(enjin.canary());
 final ChainDescription enjinCanaryChainDescription =
     ChainDescription.fromMetadata(enjinCanaryMetadata);
 final Codec enjinCanaryCodec = Codec(enjinCanaryChainDescription.types);
@@ -160,12 +151,6 @@ String toJson(dynamic decoded) {
 }
 
 dynamic decodeExtrinsic(raw, network) {
-  if (network == 'enjin' || network == 'enjin-matrixchain') {
-    final dynamic decoded =
-        Extrinsic.decodeExtrinsic(raw, matrixChainDescription);
-    return decoded;
-  }
-
   if (network == 'canary' || network == 'canary-matrixchain') {
     final dynamic decoded =
         Extrinsic.decodeExtrinsic(raw, matrixCanaryChainDescription);
@@ -185,17 +170,11 @@ dynamic decodeExtrinsic(raw, network) {
   }
 
   final dynamic decoded =
-      Extrinsic.decodeExtrinsic(raw, efinityChainDescription);
+      Extrinsic.decodeExtrinsic(raw, matrixChainDescription);
   return decoded;
 }
 
 dynamic decodeEvents(raw, network) {
-  if (network == 'enjin' || network == 'enjin-matrixchain') {
-    final dynamic decoded =
-        matrixCodec.decode(matrixChainDescription.eventRecordList, raw);
-    return decoded;
-  }
-
   if (network == 'canary' || network == 'canary-matrixchain') {
     final dynamic decoded = matrixCanaryCodec.decode(
         matrixCanaryChainDescription.eventRecordList, raw);
@@ -215,6 +194,6 @@ dynamic decodeEvents(raw, network) {
   }
 
   final dynamic decoded =
-      efinityCodec.decode(efinityChainDescription.eventRecordList, raw);
+      matrixCodec.decode(matrixChainDescription.eventRecordList, raw);
   return decoded;
 }
