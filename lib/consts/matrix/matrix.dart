@@ -6,5 +6,5 @@ String canary() {
 }
 
 String production() {
-  return p.v605;
+  return p.v1000;
 }
