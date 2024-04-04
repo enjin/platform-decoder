@@ -1,42 +1,32 @@
 import 'dart:convert';
 
-import 'package:decoder/consts/enjin/enjin.dart' as enjin;
-import 'package:decoder/consts/matrix/matrix.dart' as matrix;
-import 'package:polkadart_scale_codec/polkadart_scale_codec.dart';
-import 'package:substrate_metadata/chain_description/chain_description.model.dart';
-import 'package:substrate_metadata/extrinsic.dart';
-import 'package:substrate_metadata/metadata_decoder.dart';
+import 'package:platform_decoder/consts/enjin/enjin.dart' as enjin;
+import 'package:platform_decoder/consts/matrix/matrix.dart' as matrix;
+import 'package:polkadart_scale_codec/io/io.dart';
+import 'package:substrate_metadata/core/metadata_decoder.dart';
 import 'package:substrate_metadata/models/models.dart';
 import 'dart:io';
 import 'dart:isolate';
 
-final matrixDecoder = MetadataDecoder();
-final Metadata matrixMetadata =
-    matrixDecoder.decodeAsMetadata(matrix.production());
-final ChainDescription matrixChainDescription =
-    ChainDescription.fromMetadata(matrixMetadata);
-final Codec matrixCodec = Codec(matrixChainDescription.types);
+import 'package:substrate_metadata/types/metadata_types.dart';
+import 'package:substrate_metadata/utils/utils.dart';
 
-final matrixCanaryDecoder = MetadataDecoder();
-final Metadata matrixCanaryMetadata =
-    matrixCanaryDecoder.decodeAsMetadata(matrix.canary());
-final ChainDescription matrixCanaryChainDescription =
-    ChainDescription.fromMetadata(matrixCanaryMetadata);
-final Codec matrixCanaryCodec = Codec(matrixCanaryChainDescription.types);
+final DecodedMetadata matrixMetadata =
+    MetadataDecoder.instance.decode(matrix.production());
+final ChainInfo matrixChain = ChainInfo.fromMetadata(matrixMetadata);
 
-final enjinDecoder = MetadataDecoder();
-final Metadata enjinMetadata =
-    enjinDecoder.decodeAsMetadata(enjin.production());
-final ChainDescription enjinChainDescription =
-    ChainDescription.fromMetadata(enjinMetadata);
-final Codec enjinCodec = Codec(enjinChainDescription.types);
+final DecodedMetadata matrixCanaryMetadata =
+    MetadataDecoder.instance.decode(matrix.canary());
+final ChainInfo matrixCanaryChain =
+    ChainInfo.fromMetadata(matrixCanaryMetadata);
 
-final enjinCanaryDecoder = MetadataDecoder();
-final Metadata enjinCanaryMetadata =
-    enjinCanaryDecoder.decodeAsMetadata(enjin.canary());
-final ChainDescription enjinCanaryChainDescription =
-    ChainDescription.fromMetadata(enjinCanaryMetadata);
-final Codec enjinCanaryCodec = Codec(enjinCanaryChainDescription.types);
+final DecodedMetadata enjinMetadata =
+    MetadataDecoder.instance.decode(enjin.production());
+final ChainInfo enjinChain = ChainInfo.fromMetadata(enjinMetadata);
+
+final DecodedMetadata enjinCanaryMetadata =
+    MetadataDecoder.instance.decode(enjin.canary());
+final ChainInfo enjinCanaryChain = ChainInfo.fromMetadata(enjinCanaryMetadata);
 
 void main() async {
   for (var i = 1; i < 8; i++) {
@@ -78,14 +68,15 @@ void _handleRequest(HttpRequest request) async {
 
   if (body['extrinsic'] != null) {
     try {
-      final decoded = decodeExtrinsic(body['extrinsic'], network);
-      decoded['extrinsic_hash'] = Extrinsic.computeHash(body['extrinsic']);
-      String extrinsic = toJson(decoded);
+      final Map<String, dynamic> decoded =
+          decodeExtrinsic(body['extrinsic'], network);
+      final extrinsic = decoded.toJson();
+      extrinsic['extrinsic_hash'] = extrinsic['hash'];
 
       res
         ..headers.contentType = ContentType.json
         ..statusCode = HttpStatus.ok
-        ..write(extrinsic);
+        ..write(jsonEncode(extrinsic));
     } catch (e) {
       res
         ..headers.contentType = ContentType.json
@@ -97,16 +88,17 @@ void _handleRequest(HttpRequest request) async {
   if (body['extrinsics'] != null) {
     try {
       final extrinsics = (body['extrinsics'] as List).map((e) {
-        final decoded = decodeExtrinsic(e, network);
-        decoded['extrinsic_hash'] = Extrinsic.computeHash(e);
+        final Map<String, dynamic> decoded = decodeExtrinsic(e, network);
+        final extrinsic = decoded.toJson();
+        extrinsic['extrinsic_hash'] = extrinsic['hash'];
 
-        return toJson(decoded);
+        return extrinsic;
       });
 
       res
         ..headers.contentType = ContentType.json
         ..statusCode = HttpStatus.ok
-        ..write(extrinsics.toList());
+        ..write(jsonEncode(extrinsics.toList()));
     } catch (e) {
       res
         ..headers.contentType = ContentType.json
@@ -117,13 +109,15 @@ void _handleRequest(HttpRequest request) async {
 
   if (body['events'] != null) {
     try {
-      final decoded = decodeEvents(body['events'], network);
-      String events = toJson(decoded);
+      final decoded = (decodeEvents(body['events'], network) as List).map((e) {
+        final event = e as Map<String, dynamic>;
+        return event.toJson();
+      });
 
       res
         ..headers.contentType = ContentType.json
         ..statusCode = HttpStatus.ok
-        ..write(events);
+        ..write(jsonEncode(decoded.toList()));
     } catch (e) {
       res
         ..headers.contentType = ContentType.json
@@ -135,65 +129,52 @@ void _handleRequest(HttpRequest request) async {
   await res.close();
 }
 
-String toJson(dynamic decoded) {
-  return jsonEncode(decoded, toEncodable: (dynamic obj) {
-    if (obj is BigInt) {
-      return obj.toString();
-    }
-    if (obj is Some) {
-      return {'Some': obj.value};
-    }
-    if (obj is NoneOption) {
-      return {'None': null};
-    }
-    return obj;
-  });
-}
-
 dynamic decodeExtrinsic(raw, network) {
+  final input = Input.fromHex(raw);
+
   if (network == 'canary' || network == 'canary-matrixchain') {
     final dynamic decoded =
-        Extrinsic.decodeExtrinsic(raw, matrixCanaryChainDescription);
+        ExtrinsicsCodec(chainInfo: matrixCanaryChain).decode(input);
     return decoded;
   }
 
   if (network == 'enjin-relaychain') {
     final dynamic decoded =
-        Extrinsic.decodeExtrinsic(raw, enjinChainDescription);
+        ExtrinsicsCodec(chainInfo: enjinChain).decode(input);
     return decoded;
   }
 
   if (network == 'canary-relaychain') {
     final dynamic decoded =
-        Extrinsic.decodeExtrinsic(raw, enjinCanaryChainDescription);
+        ExtrinsicsCodec(chainInfo: enjinCanaryChain).decode(input);
     return decoded;
   }
 
-  final dynamic decoded =
-      Extrinsic.decodeExtrinsic(raw, matrixChainDescription);
+  final dynamic decoded = ExtrinsicsCodec(chainInfo: matrixChain).decode(input);
   return decoded;
 }
 
 dynamic decodeEvents(raw, network) {
+  final input = Input.fromHex(raw);
+
   if (network == 'canary' || network == 'canary-matrixchain') {
-    final dynamic decoded = matrixCanaryCodec.decode(
-        matrixCanaryChainDescription.eventRecordList, raw);
+    final List<dynamic> decoded =
+        matrixCanaryChain.scaleCodec.decode('EventCodec', input);
     return decoded;
   }
 
   if (network == 'enjin-relaychain') {
-    final dynamic decoded =
-        enjinCodec.decode(enjinChainDescription.eventRecordList, raw);
+    final List<dynamic> decoded =
+        enjinChain.scaleCodec.decode('EventCodec', input);
     return decoded;
   }
 
   if (network == 'canary-relaychain') {
-    final dynamic decoded = enjinCanaryCodec.decode(
-        enjinCanaryChainDescription.eventRecordList, raw);
+    final List<dynamic> decoded =
+        enjinCanaryChain.scaleCodec.decode('EventCodec', input);
     return decoded;
   }
 
-  final dynamic decoded =
-      matrixCodec.decode(matrixChainDescription.eventRecordList, raw);
+  final decoded = matrixChain.scaleCodec.decode('EventCodec', input);
   return decoded;
 }
