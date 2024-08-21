@@ -1,4 +1,4 @@
-FROM dart:stable as build
+FROM dart:3.4 as build
 
 LABEL org.opencontainers.image.source=https://github.com/enjin/platform-decoder
 LABEL org.opencontainers.image.description="Enjin Platform - Decoder"
