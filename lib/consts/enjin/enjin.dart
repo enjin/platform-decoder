@@ -2,7 +2,7 @@ import 'canary/canary.dart' as c;
 import 'production/production.dart' as p;
 
 String canary() {
-  return c.v1030;
+  return c.v1032;
 }
 
 String production() {
