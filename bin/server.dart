@@ -24,6 +24,8 @@ Handler init() {
   var app = Router().plus;
   app.use(logRequests());
 
+  app.get('/', () => 'Ok');
+  app.get('/health', () => {'status': 'healthy'});
   app.post('/', (Request request) async {
     return await handleRequest(request);
   });
