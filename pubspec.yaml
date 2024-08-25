@@ -1,18 +1,19 @@
 name: platform_decoder
 description: Enjin Platform Decoder
-version: 1.6.0
+version: 1.10.1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.1 <4.0.0"
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
-  shelf: ^1.4.1
-  polkadart: ^0.4.3
-  substrate_metadata: ^1.2.0
-  polkadart_scale_codec: ^1.2.0
+  shelf: ^1.4.2
+  shelf_plus: ^1.9.2
+  polkadart: ^0.4.7
+  substrate_metadata: ^1.2.1
+  polkadart_scale_codec: ^1.2.1
   compute: ^1.0.2
 
 dev_dependencies:
-  lints: ^3.0.0
-  test: ^1.25.2
+  lints: ^4.0.0
+  test: ^1.25.8
