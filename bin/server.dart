@@ -18,6 +18,7 @@ void spawnServer(_) => shelfRun(
       defaultBindAddress: InternetAddress.anyIPv4,
       defaultShared: true,
       defaultBindPort: 8090,
+      defaultEnableHotReload: false,
     );
 
 Handler init() {
