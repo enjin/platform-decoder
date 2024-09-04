@@ -10,7 +10,7 @@ dependencies:
   shelf: ^1.4.2
   shelf_plus: ^1.9.2
   polkadart: ^0.4.7
-  substrate_metadata: ^1.2.1
+  substrate_metadata: ^1.2.2
   polkadart_scale_codec: ^1.2.1
   compute: ^1.0.2
 
