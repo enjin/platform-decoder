@@ -7,7 +7,7 @@ import 'package:substrate_metadata/utils/utils.dart';
 
 int getLatestSpecVersion(network) {
   if (network == 'enjin-relaychain') {
-    return 1026;
+    return 1032;
   }
   if (network == 'canary-relaychain') {
     return 1032;
@@ -15,7 +15,7 @@ int getLatestSpecVersion(network) {
   if (network == 'canary' || network == 'canary-matrixchain') {
     return 1012;
   }
-  return 1006;
+  return 1012;
 }
 
 Future<dynamic> handleRequest(Request request) async {
