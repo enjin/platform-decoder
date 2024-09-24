@@ -22,6 +22,11 @@ int getLatestSpecVersion(network) {
 }
 
 Future<dynamic> handleRequest(Request request) async {
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((record) {
+    print('${record.time} [${record.level.name}] ${record.message}');
+  });
+
   String content = await utf8.decoder.bind(request.read()).join();
   final Map<String, dynamic> body = jsonDecode(content);
   final network = body['network'] ?? 'enjin-matrixchain';
