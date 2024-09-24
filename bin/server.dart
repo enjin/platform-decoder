@@ -20,7 +20,7 @@ void loadConfig() {
   int specExpireDuration =
       int.tryParse(env.getOrElse('SPEC_EXPIRE_DURATION', () => '300')) ?? 300;
 
-  logger.info('Starting Platform Decoder v2.1.0');
+  logger.info('Starting Platform Decoder v2.1.1');
   logger.info('Number of isolates: $numberOfIsolates');
   logger.info('Spec per isolate: $specPerIsolate');
   logger.info('Spec expire duration: $specExpireDuration');
