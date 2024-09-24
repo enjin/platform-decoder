@@ -1,4 +1,5 @@
 .idea
+.env
 
 ### Dart template
 # See https://www.dartlang.org/guides/libraries/private-files
