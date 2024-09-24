@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:logging/logging.dart';
 import 'package:platform_decoder/decoder/decoder.dart';
 import 'package:shelf/shelf.dart';
 import 'package:substrate_metadata/utils/utils.dart';
+
+final logger = Logger('Decoder');
 
 int getLatestSpecVersion(network) {
   if (network == 'enjin-relaychain') {
@@ -33,6 +36,8 @@ Future<dynamic> handleRequest(Request request) async {
 
       return extrinsic;
     } catch (e) {
+      logger.warning('Failed to decode extrinsic with reason: $e');
+      logger.warning('Extrinsic $network v$specVersion: ${body['extrinsic']}');
       return {"error": "Failed to decode extrinsic"};
     }
   }
@@ -50,6 +55,8 @@ Future<dynamic> handleRequest(Request request) async {
 
       return extrinsics.toList();
     } catch (e) {
+      logger.warning('Failed to decode extrinsics with reason: $e');
+      logger.warning('Extrinsic $network v$specVersion: ${body['extrinsics']}');
       return {"error": "Failed to decode extrinsics"};
     }
   }
@@ -64,6 +71,8 @@ Future<dynamic> handleRequest(Request request) async {
 
       return decoded.toList();
     } catch (e) {
+      logger.warning('Failed to decode events with reason: $e');
+      logger.warning('Extrinsic $network v$specVersion: ${body['events']}');
       return {"error": "Failed to decode events"};
     }
   }
