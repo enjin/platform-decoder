@@ -56,6 +56,11 @@ Handler init() {
   var app = Router().plus;
   app.use(logRequests());
 
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((record) {
+    print('${record.time} [${record.level.name}] ${record.message}');
+  });
+
   app.get('/', () => 'Ok');
   app.get('/health', () => {'status': 'healthy'});
   app.post('/', (Request request) async {
