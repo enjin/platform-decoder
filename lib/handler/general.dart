@@ -13,7 +13,7 @@ int getLatestSpecVersion(network) {
     return 1032;
   }
   if (network == 'canary-relaychain') {
-    return 1032;
+    return 1033;
   }
   if (network == 'canary' || network == 'canary-matrixchain') {
     return 1012;
