@@ -2,7 +2,7 @@ import 'canary/canary.dart' as c;
 import 'production/production.dart' as p;
 
 String canaryLatest() {
-  return c.v1012;
+  return c.v1013;
 }
 
 String productionLatest() {
@@ -51,6 +51,8 @@ String canarySpec(specVersion) {
       return c.v1011;
     case 1012:
       return c.v1012;
+    case 1013:
+      return c.v1013;
     default:
       return canaryLatest();
   }
