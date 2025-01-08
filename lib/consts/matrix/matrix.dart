@@ -6,7 +6,7 @@ String canaryLatest() {
 }
 
 String productionLatest() {
-  return p.v1012;
+  return p.v1014;
 }
 
 String metadata(network, specVersion) {
@@ -80,6 +80,8 @@ String productionSpec(specVersion) {
       return p.v1006;
     case 1012:
       return p.v1012;
+    case 1014:
+      return p.v1014;
     default:
       return productionLatest();
   }
