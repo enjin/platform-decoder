@@ -12,6 +12,7 @@ export 'v1030.dart';
 export 'v1031.dart';
 export 'v1032.dart';
 export 'v1033.dart';
+export 'v1050.dart';
 export 'v104.dart';
 export 'v105.dart';
 export 'v106.dart';
