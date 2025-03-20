@@ -10,13 +10,13 @@ final logger = Logger('Decoder');
 
 int getLatestSpecVersion(network) {
   if (network == 'enjin-relaychain') {
-    return 1032;
+    return 1050;
   }
   if (network == 'canary-relaychain') {
     return 1050;
   }
   if (network == 'canary' || network == 'canary-matrixchain') {
-    return 1020;
+    return 1022;
   }
   return 1014;
 }
