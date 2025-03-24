@@ -18,7 +18,7 @@ int getLatestSpecVersion(network) {
   if (network == 'canary' || network == 'canary-matrixchain') {
     return 1022;
   }
-  return 1014;
+  return 1022;
 }
 
 Future<dynamic> handleRequest(Request request) async {
