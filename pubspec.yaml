@@ -1,6 +1,6 @@
 name: platform_decoder
 description: Enjin Platform Decoder
-version: 2.3.0
+version: 2.6.0
 publish_to: none
 
 environment:
