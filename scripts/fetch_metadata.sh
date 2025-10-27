@@ -79,6 +79,7 @@ process_network() {
   update_exports "$base" "$category" "$environment" "$version"
 
   echo "$network: v$version -> lib/consts/$category/$environment/v$version.dart"
+  echo "REMINDER: Update lib/consts/$category/$category.dart to include case $version in the ${environment}Spec function"
 }
 
 command -v jq >/dev/null || {
